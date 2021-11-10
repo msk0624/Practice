@@ -1,3 +1,3 @@
-print("it is too hard!!")
+print("now im practice visual studio code and")
 
-print("it is second try to practice")
+print("oh it is what")
