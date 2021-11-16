@@ -50,4 +50,13 @@ ax[1].set_title('Count plot - Survived')
 #print(plt.show())
 # #결과물 출력
 
-print(df_train[['Pclass','Survived']].groupby(['Pclass'],as_index=True).count())
+#print(df_train[['Pclass','Survived']].groupby(['Pclass'],as_index=True).count()) 
+# #pclass 별 데이터 카운트
+#print(df_train[['Pclass','Survived']].groupby(['Pclass'],as_index=True).sum()) 
+# #pclass 별 생존자 수 합
+
+#print(pd.crosstab(df_train['Pclass'],df_train['Survived'],margins=True))
+# #pclass 별 데이터, 생존자 크로스탭
+
+#print(df_train[['Pclass', 'Survived']].groupby(['Pclass'],as_index=True).mean())
+# #pclass 별 생존율
