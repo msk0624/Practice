@@ -49,3 +49,5 @@ ax[1].set_title('Count plot - Survived')
 
 #print(plt.show())
 # #결과물 출력
+
+print(df_train[['Pclass','Survived']].groupby(['Pclass'],as_index=True).count())
