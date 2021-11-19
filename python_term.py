@@ -39,16 +39,16 @@ df_submit = pd.read_csv('./gender_submission.csv')
 #print(df_test.isnull().sum()/df_test.shape[0])
 # #Age와 Cabin 열에 결측치의 20%, 80% 가 존재함을 알 수 있음.
 
-f, ax = plt.subplots(1,2, figsize=(18,8))
+#f, ax = plt.subplots(1,2, figsize=(18,8))
 
-df_train['Survived'].value_counts().plot.pie(explode=[0,0.1], autopct='%1.1f%%', ax=ax[0],shadow=True)
-ax[0].set_title('Pie plot - Survived')
-ax[0].set_ylabel('')
-sns.countplot('Survived', data=df_train, ax=ax[1])
-ax[1].set_title('Count plot - Survived')
+#df_train['Survived'].value_counts().plot.pie(explode=[0,0.1], autopct='%1.1f%%', ax=ax[0],shadow=True)
+#ax[0].set_title('Pie plot - Survived')
+#ax[0].set_ylabel('')
+#sns.countplot('Survived', data=df_train, ax=ax[1])
+#ax[1].set_title('Count plot - Survived')
 
 #print(plt.show())
-# #결과물 출력
+# # 그래프 결과물 출력 코드
 
 #print(df_train[['Pclass','Survived']].groupby(['Pclass'],as_index=True).count()) 
 # #pclass 별 데이터 카운트
@@ -60,3 +60,16 @@ ax[1].set_title('Count plot - Survived')
 
 #print(df_train[['Pclass', 'Survived']].groupby(['Pclass'],as_index=True).mean())
 # #pclass 별 생존율
+
+#df_train[['Pclass', 'Survived']].groupby(["Pclass"],as_index=True).mean().plot.bar()
+# #Pclass 별 생존율 바그래프
+
+#f, ax = plt.subplots(1,2,figsize=(18,10))
+#df_train[['Sex',"Survived"]].groupby(['Sex'],as_index=True).mean().plot.bar(ax=ax[0])
+#ax[0].set_title('Survived vs Sex')
+#sns.countplot('Sex', hue='Survived',data=df_train,ax=ax[1])
+#ax[1].set_title('Sex : Survived vs Dead')
+# #성별 생존율, 성별 생존 및 죽은 인원 그래프
+
+#sns.factorplot('Pclass','Survived',hue='Sex',data=df_train,size=6,aspect=1.5)
+# #Pclass별 남,녀 생존율 선그래프
