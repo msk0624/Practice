@@ -137,10 +137,93 @@ df_submit = pd.read_csv('./gender_submission.csv')
 # # Figure(3) - 생존확률이 S가 낮음. 
 # # Figure(4) - Pclass별로 나눠서 보니 C가 생존확률이 높았던건, 높은 클래스가 많이 타서인걸 보여줌.
 
-#df_train['FamilySize'] = df_train['SibSp'] + df_train['Parch'] + 1
-#df_test['FamilySize'] = df_test['SibSp'] + df_test['Parch'] + 1
+df_train['FamilySize'] = df_train['SibSp'] + df_train['Parch'] + 1
+df_test['FamilySize'] = df_test['SibSp'] + df_test['Parch'] + 1
 # # 가족 열 생성 (형제 + 부자 지간 + 자신(=1))
 
 #print("Maximum size of Family: ", df_train['FamilySize'].max())
 #print("Maximum size of Family: ", df_train['FamilySize'].min())
 
+#f,ax = plt.subplots(1,3,figsize=(40,10))
+#sns.countplot('FamilySize', data=df_train, ax=ax[0])
+#ax[0].set_title('(1) No. Of Passengers Boarded', y=1.02)
+
+#sns.countplot('FamilySize', hue='Survived', data=df_train, ax=ax[1])
+#ax[1].set_title('(2) Survived countplot depending on FamilySize', y=1.02)
+
+#df_train[['FamilySize', 'Survived']].groupby(['FamilySize'], as_index=True).mean().sort_values(by='Survived', ascending=False).plot.bar(ax=ax[2])
+#ax[2].set_title('(3) Survived rate depending on FamilySize', y=1.02)
+
+#print(plt.show())
+#plt.subplots_adjust(wspace=0.5, hspace=0.5)
+# #가족사이즈에 따른 (1)가족 사이즈 수 비교, (2)가족 사이즈에 따른 생존자 수 비교, (3)가족 사이즈에 따른 생존자 수 평균
+
+#fig, ax = plt.subplots(1,1,figsize=(8,8))
+#g = sns.distplot(df_train['Fare'], color='b', label='Skewness : {:.2f}'.format(df_train['Fare'].skew()), ax=ax)
+#g = g.legend(loc='best')
+#print(plt.show())
+# #요금에 따른 밀집도
+
+df_test.loc[df_test.Fare.isnull(), 'Fare'] = df_test['Fare'].mean()
+# # #test셋에 Fare에 해당하는 데이터중 널값이 하나 존재하는 것을 확인.
+# # #test셋에 있는 nan value를 평균값으로 치환
+#
+#df_train['Fare'] = df_train['Fare'].map(lambda i: np.log(i) if i>0 else 0)
+#df_test['Fare'] = df_test['Fare'].map(lambda i: np.log(i) if i>0 else 0)
+#
+#fig,ax = plt.subplots(1,1,figsize=(8,8))
+#g = sns.distplot(df_train['Fare'], color='b', label="Skewness : {:.2f}".format(df_train['Fare'].skew()),ax=ax)
+#g = g.legend(loc='best')
+#print(plt.show())
+# #log값을 Fare에다 취하니, 비대칭성이 많이 사라짐을 볼수 있음.
+
+#print(df_train['Cabin'].isnull().sum() / df_train.shape[0])
+# #Cabin의 널 비율이 77퍼정도임. 그래서 제외
+#print(df_train.head()[['PassengerId','Cabin']])
+# #실제로 Cabin의 상위 5개항목중 널값이 3개나 있는 것을 볼 수 있음.
+
+#print(df_train.head()['Ticket'].value_counts())
+# #티켓 넘버는 매우다양함. 이걸 사용하려면 어떤 특징을 찾아서 데이터와 연결하는 그런 창의적 아이디어가 필요함!
+
+## 데이터분석은 null데이터를 어떻게 처리하냐가 정말 중요하다!!
+
+print(df_train['Age'].isnull().sum())
+# #Age에도 널데이터가 있음을 보여줌.
+
+# # ([A-Za-z]+)\. 의 표현 뜻은 [A-Za-z]로 되는 문자가 한번 반복(=)되고, \. (문자 .) 이 붙은 형태로 된 것을 ()범위 내에서 뽑아내라는 뜻.
+df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.')
+df_test['Initial'] = df_test.Name.str.extract('([A-Za-z]+)\.')
+
+#pd.crosstab(df_train['Initial'], df_train['Sex']).T.style.background_gradient(cmap='summer_r')
+# #원래 보여야 하는데..? 편집기 오류인가 안보임;; 
+#print(df_train['Initial'].unique())
+
+df_train['Initial'].replace(['Mlle','Mme','Ms','Dr','Major','Lady','Countess','Jonkheer','Col','Rev','Capt','Sir','Don', 'Dona'],
+                        ['Miss','Miss','Miss','Mr','Mr','Mrs','Mrs','Other','Other','Other','Mr','Mr','Mr', 'Mr'],inplace=True)
+
+df_test['Initial'].replace(['Mlle','Mme','Ms','Dr','Major','Lady','Countess','Jonkheer','Col','Rev','Capt','Sir','Don', 'Dona'],
+                        ['Miss','Miss','Miss','Mr','Mr','Mrs','Mrs','Other','Other','Other','Mr','Mr','Mr', 'Mr'],inplace=True)
+
+#print(df_train.groupby('Initial').mean())
+
+#df_train.groupby('Initial')['Survived'].mean().plot.bar()
+#print(plt.show())
+
+## null 데이터를 지우기 시작할껀데, 통계학을 사용해도 되고, null이 없는 데이터를 기반으로 새 머신러닝 알고리즘을 만들어도 됨,.
+## 우리는 통계학방법을 사용하기로 결정. trains에서 통계학 평균을 추출하여 test의 널값에 넣을 예정
+
+df_train.loc[(df_train.Age.isnull())&(df_train.Initial=='Mr'),'Age'] = 33
+df_train.loc[(df_train.Age.isnull())&(df_train.Initial=='Mrs'),'Age'] = 36
+df_train.loc[(df_train.Age.isnull())&(df_train.Initial=='Master'),'Age'] = 5
+df_train.loc[(df_train.Age.isnull())&(df_train.Initial=='Miss'),'Age'] = 22
+df_train.loc[(df_train.Age.isnull())&(df_train.Initial=='Other'),'Age'] = 46
+
+df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Mr'),'Age'] = 33
+df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Mrs'),'Age'] = 36
+df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Master'),'Age'] = 5
+df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Miss'),'Age'] = 22
+df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Other'),'Age'] = 46
+
+print(df_train.isnull().sum()[df_train.isnull().sum() > 0])
+print(df_test.isnull().sum()[df_test.isnull().sum() > 0])
+# #null값이 있는 행들 추출해본 결과 Age의 널값이 지워졌음을 알 수 있다.
