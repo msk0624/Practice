@@ -187,7 +187,7 @@ df_test.loc[df_test.Fare.isnull(), 'Fare'] = df_test['Fare'].mean()
 
 ## 데이터분석은 null데이터를 어떻게 처리하냐가 정말 중요하다!!
 
-print(df_train['Age'].isnull().sum())
+#print(df_train['Age'].isnull().sum())
 # #Age에도 널데이터가 있음을 보여줌.
 
 # # ([A-Za-z]+)\. 의 표현 뜻은 [A-Za-z]로 되는 문자가 한번 반복(=)되고, \. (문자 .) 이 붙은 형태로 된 것을 ()범위 내에서 뽑아내라는 뜻.
@@ -224,6 +224,72 @@ df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Master'),'Age'] = 5
 df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Miss'),'Age'] = 22
 df_test.loc[(df_test.Age.isnull())&(df_test.Initial=='Other'),'Age'] = 46
 
-print(df_train.isnull().sum()[df_train.isnull().sum() > 0])
-print(df_test.isnull().sum()[df_test.isnull().sum() > 0])
+#print(df_train.isnull().sum()[df_train.isnull().sum() > 0])
+#print(df_test.isnull().sum()[df_test.isnull().sum() > 0])
 # #null값이 있는 행들 추출해본 결과 Age의 널값이 지워졌음을 알 수 있다.
+
+#print('Embarked has', sum(df_train['Embarked'].isnull()), 'Null values')
+# #Embarked 열에는 null 값이 2개 있는것을 알 수 있음.
+
+df_train['Embarked'].fillna('S', inplace=True)
+# #null 값을 'S'으로 대체. fillna가 함수고 inplace는 바로 데이터 프레임에 적용할 수 있게하는 명령어
+
+#print(df_train.isnull().sum())
+#print(df_train.isnull().sum()[df_train.isnull().sum()>0])
+# #df_train의 널값이 있는 열을 골라서(조건) 그 열의 널값을 다시 sum하면 cabin만 널값이 있음을 알 수 있다.
+
+def category_age(x):
+    if x < 10:
+        return 0
+    elif x < 20:
+        return 1
+    elif x < 30:
+        return 2
+    elif x < 40:
+        return 3
+    elif x < 50:
+        return 4
+    elif x < 60:
+        return 5
+    elif x < 70:
+        return 6
+    else:
+        return 7
+# #age mean을 채울때 loc 함수를 썻지만 여기서는 apply함수로 age를 카테고리화 해서 열을 새로 만들어 보겠습니당.
+
+df_train['Age_cat'] = df_train['Age'].apply(category_age)
+df_test['Age_cat'] = df_test['Age'].apply(category_age)
+
+#print(df_train.groupby(['Age_cat'])['PassengerId'].count())
+# #Age 카테고리화 성공
+
+df_train['Initial'] = df_train['Initial'].map({'Master':0, 'Miss':1, 'Mr':2, 'Mrs':3, 'Other':4})
+df_test['Initial'] = df_test['Initial'].map({'Master':0, 'Miss':1, 'Mr':2, 'Mrs':3, 'Other':4})
+# #컴퓨터가 이니셜을 인식할수 있도록 수치화 시킴
+
+df_train['Embarked'] = df_train['Embarked'].map({'C':0, 'Q':1, 'S':2})
+df_test['Embarked'] = df_test['Embarked'].map({'C':0, 'Q':1, 'S':2})
+
+#print(df_train['Embarked'].isnull().any(), df_train['Embarked'].dtypes)
+# #Embarked에 널값이 없고 데이터 타입이 숫자인걸 알 수 있음.
+
+# #이제 각 feature간 상관관계를 분석할 것임.
+# # -1에 가까울수록 반비례, 0에 가까울수록 관계없음, 1에 가까울수록 정비례
+
+df_train['Sex'] = df_train['Sex'].map({'male':0, 'female':1})
+df_test['Sex'] = df_test['Sex'].map({'male':0, 'female':1})
+
+#print(df_train.head())
+
+#heatmap_data = df_train[['Survived', 'Pclass', 'Sex', 'Fare', 'Embarked', 'FamilySize', 'Initial', 'Age_cat', 'Age']]
+#colormap = plt.cm.RdBu
+#plt.figure(figsize=(14,12))
+#plt.title('Pearson Correlation Of Features', y=1.05, size=15)
+#sns.heatmap(heatmap_data.astype(float).corr(),linewidths=0.1,vmax=1.0,
+#            square=True,cmap=colormap,linecolor='white',annot=True, annot_kws={"size":16})
+#
+#print(plt.show())
+#del heatmap_data
+
+# #상관관계를 보니 Sex 와 Pclass가 Survived 와 관계있음.
+# #Fare와 Embarked도 어느정도 상관있음을 알 수 있음.
