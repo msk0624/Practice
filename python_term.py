@@ -293,3 +293,56 @@ df_test['Sex'] = df_test['Sex'].map({'male':0, 'female':1})
 
 # #상관관계를 보니 Sex 와 Pclass가 Survived 와 관계있음.
 # #Fare와 Embarked도 어느정도 상관있음을 알 수 있음.
+# #서로 강한 상관관계를 가진 feature들이 없음. 이것은 우리가 모델을 학습시킬때 불필요한 featrure가 없음을 의미.
+# #만약 1 또는 -1 관계를 가진 feature들이 있으면 우리가 얻을 수 있는 정보는 하나로 확정되기 때문!!
+
+# #데이터 전처리 작업 시작
+
+df_train = pd.get_dummies(df_train, columns=['Initial'], prefix='Initial')
+df_test = pd.get_dummies(df_test, columns=['Initial'], prefix='Initial')
+# #모델의 성능을 높이기 위해 벡터형 데이터로 바꾸어주는 'One-hot Encoding' 방식을 사용
+# #이렇게 함으로써 각 클래스간 연관성을 Orthogonal(직교, 동일하게) 만들 수 있음
+
+df_train = pd.get_dummies(df_train, columns=['Embarked'], prefix='Embarked')
+df_test = pd.get_dummies(df_test, columns=['Embarked'], prefix='Embarked')
+# #Embarked 열도 동일하게 적용
+
+#print(df_train.head())
+# #만약 'One-hot Encoding'을 했을때 category가 100개가 넘어가는 경우가 생김. 이러면 학습시 매우 버거움. 이것을 '차원의 저주' 라고 부름!!
+
+df_train.drop(['PassengerId', 'Name', 'SibSp', 'Parch', 'Ticket', 'Cabin'], axis=1, inplace=True)
+df_test.drop(['PassengerId', 'Name', 'SibSp', 'Parch', 'Ticket', 'Cabin'], axis=1, inplace=True)
+# #axis 는 행,열임 0이 행, 1이 열
+
+#print(df_train.head())
+#print(df_train.dtypes)
+#print(df_test.head())
+#print(df_test.dtypes)
+
+# #머신러닝을 시작하겠다! Target class가 Survived임. 이것은 0과 1로 이루어진 binary classfication 문제임.
+# #train set의 survived를 제외한 각 열을 가지고, 모델을 최적화 시켜서, 각 샘플(탑승객)의 생존유무를 판다하는 모델을 만들 것이다.
+# #그 후 모델이 학습하지 않았던 test set을 줘서 여기의 샘플의 생존유무를 예측해볼 것이다.
+
+from sklearn.ensemble import RandomForestClassifier #유명한 RamdonForest..
+from sklearn import metrics #모델의 평가를 위해 씀
+from sklearn.model_selection import train_test_split #training을 쉽게 나눠주는 함수.
+
+X_train = df_train.drop('Survived',axis=1).values
+target_label = df_train['Survived'].values
+X_test = df_test.values
+
+#print(X_train.shape, X_test.shape)
+
+# #우리는 더 좋은 모델을 만들기 위해서 valid(dev) set도 만들거임.
+# #비유를 하면 공부(train)하고 모의고사(valid)를 치고 수능(test)를 보는 느낌으로.
+
+X_tr, X_vld, y_tr, y_vld = train_test_split(X_train, target_label, test_size=0.2, random_state=2018)
+#print(X_tr.shape, X_vld.shape, y_tr.shape, y_vld.shape)
+# # X_train을 80%, 20%로 나누고, target_label 도 마찬가지로 나눔.
+
+model = RandomForestClassifier() #모델 생성
+model.fit(X_tr, y_tr) #학습
+prediction = model.predict(X_vld) #예측
+
+#print('총 {}명 중 {:.2f}% 정확도로 생존을 맞춤'.format(y_vld.shape[0], 100 * metrics.accuracy_score(prediction, y_vld)))
+# #아무런 파라미터 튜닝 없이 정확도가 80퍼 가까이 나옴!!
