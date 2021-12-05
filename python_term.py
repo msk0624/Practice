@@ -1,5 +1,6 @@
 # 캐글 분석 프로젝트에 필요한 패키지 불러오기
 import os
+from keras.engine import sequential
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -346,3 +347,46 @@ prediction = model.predict(X_vld) #예측
 
 #print('총 {}명 중 {:.2f}% 정확도로 생존을 맞춤'.format(y_vld.shape[0], 100 * metrics.accuracy_score(prediction, y_vld)))
 # #아무런 파라미터 튜닝 없이 정확도가 80퍼 가까이 나옴!!
+
+# #학습된 모델은 feature importance를 가지고 있습니당.
+# #쉽게 말해 y = 4x1 + 2x2 라고 하면 우리는 X1이 y에 더 큰 영향을 미친다는 것을 알고 있습니다.
+# #이 학습된 모델을 pandas를 이용하면 쉽게 분류하여 그래프를 그릴 수 있습니다.
+
+from pandas import Series
+feature_importance = model.feature_importances_
+Series_feat_imp = Series(feature_importance, index=df_test.columns)
+
+#colors = sns.color_palette('hls',len(Series_feat_imp.sort_values())) 
+#개수만큼 색상 설정
+
+#plt.figure(figsize=(8,8))
+#Series_feat_imp.sort_values(ascending=True).plot.barh(color = colors)
+#plt.xlabel('Feature importance')
+#plt.ylabel('Feature')
+#print(plt.show())
+
+# #Keras를 이용한 NN모델 개발
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout
+from tensorflow.keras.optimizers import Adam, SGD
+
+nn_model = Sequential()
+nn_model.add(Dense(32,activation='relu',input_shape=(14,)))
+nn_model.add(Dropout(0,2))
+nn_model.add(Dense(64,activation='relu'))
+nn_model.add(Dropout(0,2))
+nn_model.add(Dense(32,activation='relu'))
+nn_model.add(Dropout(0,2))
+nn_model.add(Dense(1,activation='sigmoid'))
+
+Loss = 'binary_crossentropy'
+nn_model.compile(loss=Loss,optimizer=Adam(),metrics=['accuracy'])
+print(nn_model.summary())
+
+
+
+
+
+
