@@ -1,5 +1,5 @@
 # Practice
-It is hard to learn git...
+It's measungs private Term_project_practice
 
-Now I am doing titanic term project.
-Three csv files are associated with this term project.
+All of Results are saved in main branch.
+And rests are save in others.
