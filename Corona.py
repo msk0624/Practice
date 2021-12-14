@@ -20,6 +20,7 @@ df_corona.drop(["주소","원본주소"],axis=1,inplace=True) #일단 바로 쓸
 
 #음 일단 언론사, 기고자별로 분류 하는 거 해야 될 거 같고.
 
+#-----------------------------------------------------
 df_sample = df_corona.iloc[0:1000, :]
 #               f,ax = plt.subplots(1, 1,figsize=(20,10))
 #               sns.countplot('언론사', data=df_sample)
@@ -30,25 +31,44 @@ df_sample = df_corona.iloc[0:1000, :]
 #               #ax[1].set_title('기고자 별 낸 기사 개수', y=1.02)
                
 #               print(plt.show())
+#-----------------------------------------------------
 
-#Others가 너무 높으면 안되니까 그 기준을 총 개수의 절반 이하로 잡는게 좋지않을까?
+#평균값 기준 이상값들만 표시 나머지는 others
 #print(df_sample.head())
-#print(df_sample.iloc[:,[1,3]].groupby('언론사').count().sort_values(by='제목'))
 
 df_group = df_sample.iloc[:,[1,3]].groupby('언론사').count().reset_index()
-df_group['제목'].mean() # 여기까지 이제 언론사 중앙값 구하는 거임...
+df_group['제목'].mean() # 여기까지 이제 언론사 중앙값 구한겨
 
 #df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.')
 
-a = []
 for i in df_group['제목'].sort_values(ascending=True):
     if i >= df_group['제목'].mean():
-        a.append(df_group['언론사'][df_group['제목']==i]) #얘좀 어떻게 해줘 ㅠㅠㅠㅠ 한글만 추출해봐야 하는데... '동아일보'글자만...
-        print(a)
+        mlist_dfg = df_group['언론사'][df_group['제목']==i]
+        mlist_dfg = mlist_dfg.to_list()
+        mlist_dfg.append(i)
+        #a = "".join(a) # 만약 str형태로 해야되면
         break
+    
+df_bfmap = df_sample.iloc[:,[1,3]].groupby('언론사').count().sort_values(by='제목').reset_index()
+df_bfmap.columns = ['언론사', '기사개수']
 
-#           df_train['Initial'] = df_train['Initial'].map({'Master':0, 'Miss':1, 'Mr':2, 'Mrs':3, 'Other':4}) 이런 느낌으로 매핑하면 될듯?
 
+#def map_df(x):
+#    others = []
+#    for j,v in x['기사개수'], range(len(x['기사개수'])):
+#        if j < mlist_dfg[1]:
+#            others.append(j)
+#        else:
+#            others = sum(others) / len(others) * 2 #밸런스 패치를 위해 나머지 기사 개수를 '남은개수 평균 *2' 로 잡고 매핑하자
+#    
+#            break
+
+#for j,v in df_bfmap['기사개수'], df_bfmap['기사개수'].index():
+#    if v <= 5:
+#        print(j,v)
+#    else:break
+
+#print(df_bfmap.index()) #index나 길이만큼 할당해서 for함수에 각각 집어넣어야 하는데 잘안되네..?
 
 #print(df_sample['제목'].isnull().sum())
 
