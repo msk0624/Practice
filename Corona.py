@@ -53,22 +53,26 @@ df_bfmap = df_sample.iloc[:,[1,3]].groupby('언론사').count().sort_values(by='
 df_bfmap.columns = ['언론사', '기사개수']
 
 
-#def map_df(x):
-#    others = []
-#    for j,v in x['기사개수'], range(len(x['기사개수'])):
-#        if j < mlist_dfg[1]:
-#            others.append(j)
-#        else:
-#            others = sum(others) / len(others) * 2 #밸런스 패치를 위해 나머지 기사 개수를 '남은개수 평균 *2' 로 잡고 매핑하자
-#    
-#            break
+def map_df(x):
+    others = []
+    index_others = []    
+    dict_bfmap = dict(zip(df_bfmap.index.tolist(),df_bfmap['기사개수'].tolist()))
+    for i,(j,v) in enumerate(dict_bfmap.items()):
+        if v < mlist_dfg[1]:
+            others.append(v) #평균보다 낮은 기사개수들을 리스트에 추가
+            index_others.append(j)
+    others = sum(others) / len(others) * 2 #밸런스 패치를 위해 나머지 기사 개수를 '남은개수 평균 *2' 로 잡기
+                                                 #리스트에 있는 기사 개수들을 sum하고 나눔
+    
+    for k in index_others:
+        df_bfmap['언론사'][k] = '기타'
+        df_bfmap['기사개수'][k] = others
+    df_afmap = df_bfmap.drop_duplicates()
+    return df_afmap #평균 이하 값들을 기타로 매핑하는 작업 끝
 
-#for j,v in df_bfmap['기사개수'], df_bfmap['기사개수'].index():
-#    if v <= 5:
-#        print(j,v)
-#    else:break
+#print(map_df(df_bfmap)) 
 
-#print(df_bfmap.index()) #index나 길이만큼 할당해서 for함수에 각각 집어넣어야 하는데 잘안되네..?
+
 
 #print(df_sample['제목'].isnull().sum())
 
