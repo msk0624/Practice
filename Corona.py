@@ -20,18 +20,8 @@ df_corona.drop(["주소","원본주소"],axis=1,inplace=True) #일단 바로 쓸
 
 #음 일단 언론사, 기고자별로 분류 하는 거 해야 될 거 같고.
 
-#-----------------------------------------------------
+
 df_sample = df_corona.iloc[0:1000, :]
-#               f,ax = plt.subplots(1, 1,figsize=(20,10))
-#               sns.countplot('언론사', data=df_sample)
-#               ax.set_title('언론사 별 낸 기사 개수', y=1.02)
-#               plt.xticks(rotation=75)
-               
-#               #sns.countplot('기고자', data=df_sample, ax=ax[1])
-#               #ax[1].set_title('기고자 별 낸 기사 개수', y=1.02)
-               
-#               print(plt.show())
-#-----------------------------------------------------
 
 #평균값 기준 이상값들만 표시 나머지는 others
 #print(df_sample.head())
@@ -40,6 +30,7 @@ df_group = df_sample.iloc[:,[1,3]].groupby('언론사').count().reset_index()
 df_group['제목'].mean() # 여기까지 이제 언론사 중앙값 구한겨
 
 #df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.')
+#print(df_sample['제목'].isnull().sum())
 
 for i in df_group['제목'].sort_values(ascending=True):
     if i >= df_group['제목'].mean():
@@ -56,7 +47,7 @@ df_bfmap.columns = ['언론사', '기사개수']
 def map_df(x):
     others = []
     index_others = []    
-    dict_bfmap = dict(zip(df_bfmap.index.tolist(),df_bfmap['기사개수'].tolist()))
+    dict_bfmap = dict(zip(x.index.tolist(),x['기사개수'].tolist()))
     for i,(j,v) in enumerate(dict_bfmap.items()):
         if v < mlist_dfg[1]:
             others.append(v) #평균보다 낮은 기사개수들을 리스트에 추가
@@ -65,28 +56,39 @@ def map_df(x):
                                                  #리스트에 있는 기사 개수들을 sum하고 나눔
     
     for k in index_others:
-        df_bfmap['언론사'][k] = '기타'
-        df_bfmap['기사개수'][k] = others
-    df_afmap = df_bfmap.drop_duplicates()
+        x['언론사'][k] = '기타'
+        x['기사개수'][k] = others
+    df_afmap = x.drop_duplicates() #중복 값 제거
     return df_afmap #평균 이하 값들을 기타로 매핑하는 작업 끝
 
-#print(map_df(df_bfmap)) 
+sns.barplot(data=map_df(df_bfmap),
+            x='언론사',
+            y='기사개수')
+plt.xticks(rotation = 70) #언론사 별 낸 기사 개수 barplot을 시각화
+
+#print(plt.show())
 
 
-
-#print(df_sample['제목'].isnull().sum())
-
-#                       print(df_sample.drop(['본문'],axis=1).head())
-#                       df_sample['기고자'].fillna('이름없음', inplace=True)
-#                       print(df_sample['기고자'].isnull().sum())
-
-
-
-
-#------------------------------------------------------------------
 #통합 분류 1,2를 합치든지 뭘하든지 해서 Nan값 없애야 할 거 같고
 #사건 사고 분류 nan값 엄청 많아서 자세히 보고 빼든지, 새로 값 추가 하든지 해야할듯?
+#키워드를 좀 분석해야 채울 수 있을 거 같음
 #print(df_corona["사건_사고 분류1"].unique())
-#print(df_corona["사건_사고 분류2"].unique())
 #print(df_corona["사건_사고 분류3"].unique())
-#일단 개많네
+#print(df_corona["사건_사고 분류2"].unique())
+
+
+#언론사 별로 낸 기사의 키워드를 wordcloud화 할 수 있게 하고 싶다.
+#그리고 그 후엔 전체 기사 키워드를 가능하게 끔 하는 것도...
+df_wordcloud = df_sample.drop(["일자","기고자","제목","통합 분류1","통합 분류2","통합 분류3","사건_사고 분류1",
+                               "사건_사고 분류2","사건_사고 분류3","개체명(인물)","개체명(지역)","개체명(기업기관)",
+                               "특성추출","본문"],axis=1)
+#print(df_wordcloud.head())
+
+print(df_wordcloud['언론사'].unique())
+pressname = input("")
+
+while True:
+    for i in df_wordcloud['언론사'].sort_values(ascending=True):
+        if pressname == i:
+            print("")
+#일단 여기까지 해놓고... 다음에 하자... 오늘 공부삘이 아니네...
