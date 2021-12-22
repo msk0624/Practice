@@ -10,6 +10,7 @@ import sklearn
 
 import re
 import collections
+from wordcloud import WordCloud, STOPWORDS
 
 from matplotlib import font_manager, rc #밑에 4줄까지 plt.plot 한글화 패치
 font_path = "C:/Windows/Fonts/NGULIM.TTF"
@@ -55,10 +56,10 @@ df_wordcloud = df_sample.drop(["일자","기고자","제목","통합 분류1","�
 
 
 
-#print(df_wordcloud['언론사'].unique())
+print(df_wordcloud['언론사'].unique())
 #while True:
 wordlist = []
-pressname = input("")
+pressname = input("언론사 이름을 넣어주세요! : ")
 for i in df_wordcloud['언론사'].unique():
     if pressname == i:
         wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
@@ -71,17 +72,28 @@ for word in wordlist:
 
     wordcounts[word] += 1
 
-print(wordcounts)
 
+wordcounts_n = dict()
+for (key, value) in wordcounts.items():
+       # 일정 기준치 이상의 개수만 가진 단어만 워드클라우드화
+   if value > 10:
+       wordcounts_n[key] = value
+
+#print(wordcounts_n)
 #얘를 나중에 def써서 함수로 만들면 됨.
 
 #print(df_wordcloud.loc[df_wordcloud['언론사'] == '디지털타임스','키워드'].tolist())
+#   ★★'KoNLPy' 라는 한글 형태소 분석 패키지가 있는데 이거는 키워드 말고 본문이나 제목 분석할때 도움될듯!★★
+#   spwords = set(STOPWORDS)
+#   spwords.add('') 이건 나중에 본문할때 해볼끼..?
 
-wc = WordCloud(max_font_size=200,
-                background_color='white', width=800, height=800).generate_from_frequencies(word_counts)
+wc = WordCloud(font_path = "C:/Windows/Fonts/NGULIM.TTF", max_font_size=200, stopwords=spwords, 
+                background_color='white', width=800, height=800).generate_from_frequencies(wordcounts_n)
 
 plt.figure(figsize=(10, 8))
 plt.imshow(wc)
 plt.tight_layout(pad=0)
 plt.axis('off')
-print(plt.show())
+#print(plt.show())
+
+#   이제 워드클라우드화까진 되니까 함수로 전체도 선택할 수 있게 만들자!!
