@@ -54,16 +54,28 @@ df_wordcloud = df_sample.drop(["일자","기고자","제목","통합 분류1","�
                                "특성추출","본문"],axis=1)
 #print(df_wordcloud.head())
 
-
-
-print(df_wordcloud['언론사'].unique())
-#while True:
+print("언론사 목록",df_wordcloud['언론사'].unique())
 wordlist = []
-pressname = input("언론사 이름을 넣어주세요! : ")
-for i in df_wordcloud['언론사'].unique():
-    if pressname == i:
-        wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
+while True:
+    pressname = input("추출하고 싶은 언론사 이름을 넣어주세요!(전체 입력 가능) : ")
+    if pressname == "전체":
+        wordstr = str(df_wordcloud.iloc[:,1].tolist())
         wordlist = wordstr.split(",")
+        print("전체를 추출합니다.")
+        break
+    else:    
+        for i in df_wordcloud['언론사'].unique():
+            if pressname == i:
+                wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
+                wordlist = wordstr.split(",")
+        addword = input("더 추춣라고 싶은 언론사가 있습니까?(1:네, 2:아니요) ")
+        if addword == 1:continue
+        
+        elif addword == 2:break #break가 자꾸안되네...?
+#            else:
+#                print("해당 언론사는 목록에 없습니다.")
+#                break
+#      잘 돌아가게 수정중...
 
 wordcounts = {}
 for word in wordlist:
@@ -87,7 +99,7 @@ for (key, value) in wordcounts.items():
 #   spwords = set(STOPWORDS)
 #   spwords.add('') 이건 나중에 본문할때 해볼끼..?
 
-wc = WordCloud(font_path = "C:/Windows/Fonts/NGULIM.TTF", max_font_size=200, stopwords=spwords, 
+wc = WordCloud(font_path = "C:/Windows/Fonts/NGULIM.TTF", max_font_size=200, 
                 background_color='white', width=800, height=800).generate_from_frequencies(wordcounts_n)
 
 plt.figure(figsize=(10, 8))

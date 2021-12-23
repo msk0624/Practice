@@ -42,3 +42,43 @@ sns.barplot(data=map_df(df_bfmap),
 plt.xticks(rotation = 70) #언론사 별 낸 기사 개수 barplot을 시각화
 
 #------------------------------------------------------------------------
+
+#while True:
+pressname = input("언론사 이름을 넣어주세요! : ")
+for i in df_wordcloud['언론사'].unique():
+    if pressname == i:
+        wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
+        wordlist = wordstr.split(",")
+
+wordcounts = {}
+for word in wordlist:
+    if word not in wordcounts:
+        wordcounts[word] = 0
+
+    wordcounts[word] += 1
+
+
+wordcounts_n = dict()
+for (key, value) in wordcounts.items():
+       # 일정 기준치 이상의 개수만 가진 단어만 워드클라우드화
+   if value > 10:
+       wordcounts_n[key] = value
+
+#print(wordcounts_n)
+#얘를 나중에 def써서 함수로 만들면 됨.
+
+#print(df_wordcloud.loc[df_wordcloud['언론사'] == '디지털타임스','키워드'].tolist())
+#   ★★'KoNLPy' 라는 한글 형태소 분석 패키지가 있는데 이거는 키워드 말고 본문이나 제목 분석할때 도움될듯!★★
+#   spwords = set(STOPWORDS)
+#   spwords.add('') 이건 나중에 본문할때 해볼끼..?
+
+wc = WordCloud(font_path = "C:/Windows/Fonts/NGULIM.TTF", max_font_size=200, 
+                background_color='white', width=800, height=800).generate_from_frequencies(wordcounts_n)
+
+plt.figure(figsize=(10, 8))
+plt.imshow(wc)
+plt.tight_layout(pad=0)
+plt.axis('off')
+#print(plt.show())
+
+#혹시 모르니까 여기에 백업해논거
