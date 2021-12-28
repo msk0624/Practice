@@ -28,7 +28,7 @@ body = json_ob['response']['body']['items']['item'] #이 속에 원하는 정보
 
 # Dataframe으로 만들기
 dataframe = json_normalize(body)
-dataframe.to_csv()
+dataframe.to_csv("view.csv", encoding="utf-8-sig") #csv형태로 보기만하면된다...
 
 
 #pp = pprint.PrettyPrinter(indent=4)
