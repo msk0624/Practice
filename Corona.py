@@ -68,14 +68,15 @@ while True:
             if pressname == i:
                 wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
                 wordlist = wordstr.split(",")
-            else: 
-                print(pressname,"은 없는 언론사 입니다.")
-                break
+                
         addword = input("더 추춣라고 싶은 언론사가 있습니까?(1:네, 2:아니요) ")
-        if addword == str(1):continue
+        if addword == 1:continue
         
-        elif addword == str(2):break
-#      잘 돌아가지로잉
+        elif addword == 2:break #break가 자꾸안되네...?
+#            else:
+#                print("해당 언론사는 목록에 없습니다.")
+#                break
+#      잘 돌아가게 수정중...
 
 wordcounts = {}
 for word in wordlist:
