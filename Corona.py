@@ -68,15 +68,12 @@ while True:
             if pressname == i:
                 wordstr = str(df_wordcloud.loc[df_wordcloud['언론사'] == i,'키워드'].tolist())
                 wordlist = wordstr.split(",")
-                
-        addword = input("더 추춣라고 싶은 언론사가 있습니까?(1:네, 2:아니요) ")
-        if addword == 1:continue
-        
-        elif addword == 2:break #break가 자꾸안되네...?
-#            else:
-#                print("해당 언론사는 목록에 없습니다.")
-#                break
-#      잘 돌아가게 수정중...
+        if pressname not in df_wordcloud['언론사'].unique().tolist():
+            print("해당 언론사는 없습니다. 다시 입력해주세요.")
+        addword = input("더 추춣라고 싶은 언론사가 있습니까?(0:아니오, 그외:예) ")
+        if addword == str(0):break
+        elif addword == str(1):continue
+#      잘 돌아간다잉
 
 wordcounts = {}
 for word in wordlist:
