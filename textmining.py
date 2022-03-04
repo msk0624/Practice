@@ -35,7 +35,7 @@ def displayWordCloud(data = None,  backgroundcolor = 'black', width=800, height=
     plt.axis("off") 
     plt.show()
 
-#displayWordCloud(''.join(df_complain['제목']))
+displayWordCloud(''.join(df_complain['제목']))
 
 #워드 클라우드 결과 '공사','소음','도로','설치'에 관한 민원이 가장 많은 것을 알 수 있다.
 #더 자세한 분석을 위해 태블로를 통해 민원이 가장 많았던 달에 대해서 분석을 시행해 보겠음
@@ -50,4 +50,4 @@ df4 = df_complain[df_complain['제목'].str.contains('설치')]
 df4['키워드'] = '설치'
 
 df_main = pd.concat([df1,df2,df3,df4])
-df_main.to_csv("강서구_주요민원.csv", encoding='utf-8-sig')
+#df_main.to_csv("강서구_주요민원.csv", encoding='utf-8-sig')

@@ -50,4 +50,4 @@ def displayWordCloud(data = None,  backgroundcolor = 'black', width=800, height=
 
 #월별 민원 확인 결과 공사,소음,설치 관련 민원은 2206과 2107에 많은 것을 알 수 있음.
 
-print(df_complain_2006[df_complain_2006['내용'].str.contains('공사')])
+#print(df_complain_2006[df_complain_2006['내용'].str.contains('공사')])
