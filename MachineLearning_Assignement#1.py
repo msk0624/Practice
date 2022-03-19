@@ -1,5 +1,8 @@
-# 김혜성 / 201821487 / ghtn2638@ajou.ac.kr 
-#library
+# Student name : 김혜성 
+# ID number : 201821487 
+# Email adress : ghtn2638@ajou.ac.kr 
+
+# library
 from math import sqrt
 import re
 
@@ -12,7 +15,7 @@ convertCelsius()
     
 # 2. getLength
 def getLength():
-    Len_x = input()
+    Len_x = input("Enter a word or phrase. ")
     print("The Length of the input is", len(Len_x), "characters.")
 getLength()
 
@@ -26,7 +29,7 @@ def quadraticRoot():
     c = int(abc_list[2])
     Xplus = (-b + sqrt(b**2-4*a*c))/2 
     Xminus = (-b - sqrt(b**2-4*a*c))/2
-    print("The solutions include ",Xplus, "and", Xminus,".")
+#    print("The solutions include",Xplus, "and", Xminus,".") <- 얘 포맷함수 써야한다. 마침표 앞에 공백 없애래.
 quadraticRoot()
 
 # 4. calcDistance
