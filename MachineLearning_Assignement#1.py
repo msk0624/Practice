@@ -27,13 +27,13 @@ def quadraticRoot():
     a = int(abc_list[0])
     b = int(abc_list[1])
     c = int(abc_list[2])
-    Xplus = (-b + sqrt(b**2-4*a*c))/2 
-    Xminus = (-b - sqrt(b**2-4*a*c))/2
-#    print("The solutions include",Xplus, "and", Xminus,".") <- 얘 포맷함수 써야한다. 마침표 앞에 공백 없애래.
+    Xplus = (-b + sqrt(b**2-4*a*c))/2*a
+    Xminus = (-b - sqrt(b**2-4*a*c))/2*a
+    print("The solutions include {Xplus} and {Xminus}.".format(Xplus=Xplus,Xminus=Xminus))
 quadraticRoot()
 
 # 4. calcDistance
 def calcDistance(x1,y1,x2,y2):
-    d = sqrt((x2-x1)**2 + (y2 - y1)**2)
+    d = sqrt((x2-x1)**2 + (y2-y1)**2)
     return(float(d))
 calcDistance(-1,15,7,-3)
