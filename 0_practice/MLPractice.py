@@ -25,3 +25,4 @@ mylabels = ["x","y","z","w"]
 plt.pie(xpoints, labels=mylabels) #파이차트
 
 plt.show()
+
