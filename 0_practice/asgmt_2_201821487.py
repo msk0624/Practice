@@ -152,4 +152,3 @@ df["Totalpay_Cata"][df['TotalPay'] <= 10000 ] = "low"
 
 df[['Id','Totalpay_Cata']].groupby(['Totalpay_Cata'],as_index=True).count().plot.bar()
 plt.show()
-
