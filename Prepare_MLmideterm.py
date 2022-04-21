@@ -23,7 +23,14 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 
 
+# Finding my current path, and change path
+import os
+os.getcwd()
+os.chdir('C:\\Users\\hsk55\\Desktop\\github\\Practice')
+
+
 ## Part A. Linear regression (Q1-Q5: 90 points)
+
 
 # Q1. (15 points) Summarize the data set with descriptive statistics.
 # Print the count, average, min, max statistics, and column names in the data set.
@@ -40,6 +47,7 @@ df.mean()
 df.min()
 df.max()
 df.count()
+df.columns
 df['Petrol_tax'].count() #특정 열도 가능
 
 
@@ -52,6 +60,7 @@ sns.heatmap(df.corr()) # 히트맵으로 상관계수 표시
 sns.histplot(data=df, x=df['Petrol_Consumption'].dropna(),kde=True,color='darkred',bins=10)
 plt.show()
 # 특정 열 선택 후, bins는 그래프 몇개로 나누어표현, kde는 밀도표시
+
 
 
 # Q3. (20 points) First, build a linear regression model. Use the “sklearn.linear_model” function. 
@@ -93,7 +102,6 @@ y_test1.head()
 
 MSE=(sum(y_test1['Error']**2))/len(y_test1['Error'])
 print(MSE)
-     
 MAE=(sum(y_test1['Error'].abs()))/len(y_test1['Error'])
 print(MAE)
 
@@ -102,7 +110,7 @@ print('MSE:', metrics.mean_squared_error(y_test, predictions))
 print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, predictions)))
 
 # Q5. (15 points) Print your own thoughts on minimizing the error rates (MAE, MSE, and RMSE) to improve the predictions.
-print("MSE, MAE, and RMSE are calculated by averaging the squares or absolute values of the differences between the predicted and actual values after processing negative numbers. Therefore, to reduce this, we need to create a more accurate linear model, which depends on how well the independent variable is set. To make a good linear model, it is most important to include how well the explanatory variables are set (only the necessary number is appropriate). If it has few explanatory variables, bias may appear large. And if too many explanatory variables are added, bias will not occur, but the degree of freedom is reduced, it cannot be said to be an efficient model.")
+print("MSE, MAE, and RMSE are calculated by averaging the squares or absolute values of the differences between the predicted and actual values after processing negative numbers. Therefore, to reduce this, we need to create a more accurate linear model, which depends on how well the independent variable is set. To make a good linear model, it is most important to include how well the explanatory variables are set (only the necessary number is appropriate). If it has few explanatory variables, bias may appear large. And if too many explanatory variables are added, bias will not occur, but the degree of freedom is reduced, it cannot be said to be an efficient model. It is expected to become a better model if additional and proper variables are included in addition to the variables given in this dataset, or if a regression analysis formula is developed through more samples.")
 
 
 ## Part B. Logistic regression (Q6-Q11: 110 points)
@@ -122,7 +130,7 @@ df['age'].count() #특정 열도 가능
 
 # Q7. (20points) Deal with missing values to clean the data set by removing the observations that have “etc” in the “industry” variable. 
 # Use the “where” function in the Numpy library.
-# 이 테스트셋에선 education에서 unknown을 드랍하도록 하겠음.
+# 이 테스트셋에선 education에서 unknown과 illiterate를 값으로 가진 행들을 드랍하도록 하겠음.
 df['education'].head()
 df['education'].unique()
 np.where(df['education']=='unknown')
@@ -132,8 +140,8 @@ df.drop(df.index[np.where(df['education']=='illiterate')], inplace=True)
 # Q8. (20 points) Generate dummies of the categorical variable, i.e., the “industry” variable. 
 # Use the “get_dummies” function in the Pandas library.
 df['education'].value_counts()
-# university.degree is reference group. because it has many values.
 
+# university.degree is reference group. because it has many values. 준거 집단 설정
 df = pd.get_dummies(data=df, columns=['education'], dtype=float)
 df.columns
 df.drop('education_university.degree', axis=1, inplace=True)
@@ -167,7 +175,7 @@ probs = logmodel.predict_proba(X_test)
 
 # Q10. (15 points) Show the accuracy and precision metrics on the predictions of the logistic regression model. 
 # Use the “sklearn.metrics” function.
-
+print("This model accuracy is {}%".format(round(logmodel.score(X_test, y_test)*100,2))) 
 print(confusion_matrix(y_test,predictions))
 print(classification_report(y_test, predictions))
 # 만약 모델의 정확도가 잘못되면, X_variables를 바꿔야함.
@@ -185,4 +193,34 @@ plt.xlabel('False Positive Rate')
 plt.show()
 
 # Q11. (20 points) Print your own suggestions on how to improve the predictions with more accuracy and more precision.
-print("The failure of this regression analysis seems to be the failure of the dependent variable setting. A high-accuracy model could not be created by selecting a variable that had little correlation with other variables as the dependent variable.")
+print("The failure of this regression analysis seems to be the failure of the dependent variable setting. A high-accuracy model could not be created by selecting a variable that had little correlation with other variables as the dependent variable. As with linear regression, it is important to properly insert explanatory variables in order to make a good regression equation. Therefore, if logistic regression analysis is performed after considering this, better results can be produced.")
+
+
+
+
+
+## 그 외 추가적인 코드
+
+# np.where을 이용해서 값을 내가 원하는 값으로 재설정
+# df['education'] = np.where(df['education'] != 'unknown', 'etc', df['education'])
+# df['education'].value_counts()
+
+# 한글이면 인코딩 잘 집어넣기
+# df = pd.read_csv('ks-projects-201612.csv', encoding='cp1252') 
+
+# 모든 널값 하나라도 있으면 삭제
+# df.dropna(inplace=True) 
+
+# 특정 열 삭제
+# df.drop(['Unnamed: 13','Unnamed: 14','Unnamed: 15','Unnamed: 16'], axis=1, inplace=True) 
+
+
+# 컬럼 뒤에 있는 여백 삭제후 컬럼 이름 재설정
+# cols = df_train.columns.tolist()
+# for entry in np.arange(0,len(cols),1):
+#     cols[entry] = cols[entry].rstrip()
+# df_train.columns = cols
+# df_train.columns
+
+# object부분을 numeric형태로 집어넣기
+# df_train[['goal', 'pledged', 'usd pledged', 'backers']] = df_train[['goal', 'pledged', 'usd pledged', 'backers']].apply(pd.to_numeric, errors='coerce')
