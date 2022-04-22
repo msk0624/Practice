@@ -74,6 +74,9 @@ y = df['Petrol_Consumption']
 X_train, X_test, y_train, y_test = train_test_split(df.drop('Petrol_Consumption',axis=1), 
                                                     df['Petrol_Consumption'], test_size=0.40, 
                                                     random_state=101)
+X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                    y, test_size=0.40, 
+                                                    random_state=101)
 
 lnmodel = LinearRegression()
 lnmodel.fit(X_train,y_train)
@@ -145,7 +148,9 @@ df['education'].value_counts()
 df = pd.get_dummies(data=df, columns=['education'], dtype=float)
 df.columns
 df.drop('education_university.degree', axis=1, inplace=True)
-
+df.info()
+df.columns
+df.drop(['job','marital','default','loan','contact','day_of_week','month','y','poutcome'],axis=1, inplace=True)
 
 # Q9. (20 points) Build a logistic regression model using the “sklearn.logistic_model” function.
 df['housing'].unique()
@@ -166,6 +171,9 @@ X = housingdf[X_variables]
 y = housingdf[y_variable]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.40, random_state=101)
+X_train, X_test, y_train, y_test = train_test_split(housingdf.drop('housing',axis=1), 
+                                                    housingdf['housing'], 
+                                                    test_size=0.40, random_state=101)
 
 logmodel = LogisticRegression()
 logmodel.fit(X_train, y_train)
@@ -193,7 +201,7 @@ plt.xlabel('False Positive Rate')
 plt.show()
 
 # Q11. (20 points) Print your own suggestions on how to improve the predictions with more accuracy and more precision.
-print("The failure of this regression analysis seems to be the failure of the dependent variable setting. A high-accuracy model could not be created by selecting a variable that had little correlation with other variables as the dependent variable. As with linear regression, it is important to properly insert explanatory variables in order to make a good regression equation. Therefore, if logistic regression analysis is performed after considering this, better results can be produced.")
+print("The failure of this regression analysis seems to be the failure of the dependent variable setting. A high-accuracy model could not be created by selecting a variable that had little correlation with other variables as the dependent variable. As with linear regression, it is important to properly insert explanatory variables in order to make a good regression equation. Therefore, if logistic regression analysis is performed after considering this, better results can be produced. And also Performance improvement can be expected if some of the dropped categorical variables are made into dummy variables and highly correlated ones are put together in the explanatory variable.")
 
 
 
