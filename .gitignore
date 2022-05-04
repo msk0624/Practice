@@ -1,5 +1,5 @@
 *.csv
 *.exe
+*.ipynb
 Crawlcode.py
-Crawlcode.ipynb
 Crawl.py
