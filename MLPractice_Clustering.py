@@ -94,10 +94,10 @@ cmap = colors.ListedColormap(["#682F2F", "#9E726F", "#D6B2B1", "#B9C0C9", "#9F8A
 #Plotting following features
 To_Plot = [ "Income", "Recency", "Customer_For", "Age", "Spent", "Is_Parent"]
 print("Reletive Plot Of Some Selected Features: A Data Subset")
-plt.figure()
-sns.pairplot(data[To_Plot], hue= "Is_Parent",palette= (["#682F2F","#F3AB60"]))
+# plt.figure()
+# sns.pairplot(data[To_Plot], hue= "Is_Parent",palette= (["#682F2F","#F3AB60"]))
 #Taking hue 
-plt.show()
+# plt.show()
 
 #Dropping the outliers by setting a cap on Age and income. 
 data = data[(data["Age"]<90)]
@@ -106,9 +106,9 @@ print("The total number of data-points after removing the outliers are:", len(da
 
 #correlation matrix
 corrmat= data.corr()
-plt.figure(figsize=(20,20))  
-sns.heatmap(corrmat,annot=True, cmap=cmap, center=0)
-plt.show()
+# plt.figure(figsize=(20,20))  
+# sns.heatmap(corrmat,annot=True, cmap=cmap, center=0)
+# plt.show()
 
 #Get list of categorical variables
 s = (data.dtypes == 'object')
@@ -123,10 +123,11 @@ for i in object_cols:
     
 print("All features are now numerical")
 
-
+data.head()
+data[['AcceptedCmp3', 'AcceptedCmp4', 'AcceptedCmp5', 'AcceptedCmp1','AcceptedCmp2', 'Complain', 'Response']].value_counts()
 #Creating a copy of data
 ds = data.copy()
-# creating a subset of dataframe by dropping the features on deals accepted and promotions
+# creating a subset of dataframe by dropping the features on deals accepted and promotions / 얘가 그거네 바이너리 데이터 제외
 cols_del = ['AcceptedCmp3', 'AcceptedCmp4', 'AcceptedCmp5', 'AcceptedCmp1','AcceptedCmp2', 'Complain', 'Response']
 ds = ds.drop(cols_del, axis=1)
 #Scaling
